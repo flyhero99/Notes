@@ -524,10 +524,12 @@ void prim(int st) {
 
 * 拓扑排序
 
+（1）找出图中0入度的顶点，依次在图中删除这些顶点，删除后再找出0入度的顶点，然后再删除……再找出……，直至删除所有顶点，即完成拓扑排序
 
+（2）DFS实现拓扑排序，用**栈**来保存拓扑排序的顶点序列；并且保证在某顶点入栈前，其所有邻接点已入栈
 
 ```c++
-bool topo() {
+bool topobfs() { // bfs+入度写法
     vector<int> res;
     queue<int> q;
     for(int i = 1; i <= n; i++)
@@ -542,6 +544,52 @@ bool topo() {
         }
     }
     return res.size() == n;
+}
+
+// dfs写法
+stack<int> s;
+
+void dfs(int u) {
+    if(vis[u]) return;
+    vis[u] = 1;
+    for(int i = 0; i < vec[u].size(); i++) {
+        int v = vec[u][i].v;
+        if(!vis[v]) dfs(v);
+    }
+    s.push(u);
+}
+
+void topodfs() {
+    while(!s.empty()) s.pop();
+    for(int i = 1; i <= n; i++) {
+        if(!vis[i]) dfs(i);
+    }
+    while(!s.empty()) { cout << s.top() << ' '; s.pop(); }
+    cout << endl;
+}
+```
+
+* 二分图最大匹配——匈牙利算法
+
+初始时最大匹配为空。while 找得到增广路径——do 把增广路径加入到最大匹配中去。求增广路的方法：
+
+从X部一个未匹配的顶点u开始，找一个未访问的邻接点v（v一定是Y部顶点）。对于 v，分两种情况： 
+（1）如果v未匹配，则已经找到一条增广路。 
+（2）如果v已经匹配，则取出v的匹配顶点w（w一定是X部顶点），边(w, v)目前是匹配的，根据“取反”的想法，要将(w, v)改为未匹配， (u, v)设为匹配，能实现这一点的条件是看从w为起点能否新找到一条增广路径P’ 。如果行，则u-v-P’ 就是一条以u为起点的增广路径。
+
+```c++
+bool dfs(int u) {
+    for(int i = 0; i < vec[u].size(); i++) {
+        int v = vec[u][i].v;
+        if(vis[v]) continue;
+        vis[v] = true;
+        if(!match[v] || dfs(match[v])) {
+            match[v] = u;
+            match[u] = v;
+            return true;
+        }
+    }
+    return false;
 }
 ```
 
