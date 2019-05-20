@@ -494,3 +494,54 @@ int kruskal() {
 
 由于不断向集合u中加点，所以最小代价边必须同步更新；需要建立一个辅助数组closedge,用来维护集合v中每个顶点与集合u中最小代价边信息.
 
+```c++
+int lowcost[maxn]; // lowcost[j]表示节点j与u中节点相连的最小权值，0代表已选
+int closest[maxn]; // closest[j]存储lowcost[j]对应的连接点
+
+void prim(int st) {
+    for(int i = 1; i <= n; i++) {
+        closest[i] = st;
+        lowcost[i] = g[s][i];
+    }
+    for(int i = 1; i <= n-1; i++) {
+        int minn = inf, k;
+        for(int j = 1; j <= n; j++) {
+            if(!lowcost[j] && minn > lowcost[j]) {
+                minn = lowcost[j];
+                k = j;
+            }
+        }
+        lowcost[k] = 0; // 将当前选定的节点k加进u集合
+        for(int j = 1; j <= n; j++) {
+            if(g[k][j] != 0  && g[k][j] < lowcost[j]) {
+                lowcost[j] = g[k][j];
+                closest[j] = k;
+            }
+        }
+    }
+}
+```
+
+* 拓扑排序
+
+
+
+```c++
+bool topo() {
+    vector<int> res;
+    queue<int> q;
+    for(int i = 1; i <= n; i++)
+        if(in[i] == 0) q.push(i);
+    while(!q.empty()) {
+        int u = q.front(); q.pop();
+        res.push_back(u);
+        for(int i = 0; i < vec[u].size(); i++) {
+            int v = vec[u][i].v;
+            in[v]--;
+            if(in[v] == 0) q.push(v);
+        }
+    }
+    return res.size() == n;
+}
+```
+
