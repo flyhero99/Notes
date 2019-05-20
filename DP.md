@@ -326,3 +326,171 @@ int dp(int s) {
 
 
 
+### 2019-05-20
+
+### 图论
+
+* 图的bfs
+
+```c++
+void bfs(int st) {
+    memset(vis, 0, sizeof vis);
+    queue<int> q;
+    q.push(st);
+    while(!q.empty()) {
+        int u = q.front(); q.pop();
+        if(vis[u]) continue;
+        vis[u] = true;
+        cout << u << " ";
+        for(int i = 0; i < vec[u].size(); i++) {
+            int v = vec[u][i].v;
+            q.push(v);
+        }
+    }
+    cout << endl;
+}
+```
+
+* 图的dfs
+
+```c++
+void dfs(int v) {
+    if(vis[v]) return;
+    vis[v] = 1;
+    cout << v << ' ';
+    for(int i = 0; i < vec[v].size(); i++) dfs(vec[v][i].v);
+}
+```
+
+* Bellman-Ford
+
+遍历所有边，进行n-1次松弛，如果第n次还能松弛说明有负环，否则已求出所有单源最短路。复杂度$O(VE)$
+
+```c++
+bool bellman_ford(int st) {
+    memset(dis, inf, sizeof dis);
+    dis[st] = 0;
+    for(int i = 1; i <= n-1; i++) {
+        for(int j = 1; j <= m; j++) {
+            Edge2 t = e[j];
+            int u = t.u, v = t.v, c = t.c;
+            if(dis[u] + c < dis[v]) dis[v] = dis[u] + c;
+        }
+    }
+    for(int j = 1; j <= m; j++) {
+        Edge2 t = e[j];
+        int u = t.u, v = t.v, c = t.c;
+        if(dis[u] + c < dis[v]) return false;
+    }
+    return true;
+}
+```
+
+* Dijk
+
+将有向图$G = (V, E)$的节点分成两个集合，S是已经求出最短路的，U是还未求出的。从U中选出一个dis最小的节点k，将k加入S中，然后用k来松弛所有U中与k邻接的点。重复至多n-1次，直到所有点都进入S中。
+
+```c++
+void dijkn2(int st) {
+    for(int i = 0; i <= n; i++) {
+        dis[i] = inf; vis[i] = 0; // vis相当于表示节点是否在S集合里，1表示在，0表示不在
+    }
+    dis[st] = 0;
+    for(int i = 1; i <= n-1; i++) {
+        int minn = inf, t = -1;
+        for(int j = 1; j <= n; j++) {
+            if(!vis[j] && minn > dis[j]) {
+                minn = dis[j];
+                t = j; // 找到当前dis最小的点t
+            }
+        }
+        vis[t] = true; // 把t加进集合S
+        for(int j = 0; j < vec[t].size(); j++) {
+            int v = vec[t][j].v, c = vec[t][j].c;
+            if(!vis[v] && dis[v] > dis[t] + c) { // 与t邻接的未访问过的节点
+                dis[v] = dis[t] + c;
+            }
+        }
+    }
+}
+
+void dijknlogn(int st) {
+    for(int i = 0; i <= n; i++) {
+        dis[i] = inf; vis[i] = 0;
+    }
+    priority_queue<pii, vector<pii>, qcmp> q;
+    dis[st] = 0; // vis
+    q.push(make_pair(dis[st], st));
+    while(!q.empty()) {
+        pii t = q.top(); q.pop();
+        int u = t.se;
+        if(vis[u]) continue;
+        vis[u] = true; // 相当于找到了dis最小的k，把它加入S中，下面开始用它更新
+        for(int i = 0; i < vec[u].size(); i++) {
+            int v = vec[u][i].v, c = vec[u][i].c;
+            if(vis[v]) continue;
+            if(dis[v] > dis[u] + c) {
+                dis[v] = dis[u] + c;
+                q.push(make_pair(dis[v], v));
+            }
+        }
+    }
+}
+```
+
+* Floyd
+
+$dp[i][j]$表示从i到j只经过前k个点的最短路径，由于第k个点只有经过或不经过两种情况，因此第k个状态只依赖于状态k-1，用滚动数组的思想可以省略一维。
+
+$dp^k[i][j] = min(dp^{k-1}[i][j], dp^{k-1}[i][k] + dp^{k-1}[k][j])$
+
+```c++
+bool floyd() {
+    for(int k = 1; k <= n; k++) {
+        for(int i = 1; i <= n; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(g[i][j] > g[i][k] + g[k][j]) {
+                    g[i][j] = g[i][k] + g[k][j];
+                    // path[i][j] = k;
+                }
+              	if(g[i][i] < 0) return false; // 可以判断负环，g[i][i]初始应为0，若变负说明有负环
+            }
+        }
+    }
+  	return true;
+}
+```
+
+* Kruskal
+
+1. 把图中的所有边按代价从小到大排序； 
+2. 把图中的n个顶点看成独立的n棵树组成的森林； 
+3. 按权值从小到大选择边，所选的边连接的两个顶点ui,viui,vi,应属于两颗不同的树，则成为最小生成树的一条边，并将这两颗树合并作为一颗树。 
+4. 重复(3),直到所有顶点都在一颗树内或者有n-1条边为止。
+
+```c++
+int kruskal() {
+    sort(e+1, e+m+1);
+    int cnt = 0, sum = 0;
+    for(int i = 1; i <= m; i++) {
+        int fu = Find(e[i].u), fv = Find(e[i].v);
+        if(fu == fv) continue;
+        pre[fv] = fu;
+        sum += e[i].c;
+        cnt++;
+        if(cnt == n-1) break;
+    }
+    return sum;
+}
+```
+
+* Prim
+
+每次迭代选择代价最小的边对应的点，加入到最小生成树中。算法从某一个顶点s开始，逐渐长大覆盖整个连通网的所有顶点。
+
+1. 图的所有顶点集合为V；初始令集合u = {s}, v = V − u;
+2. 在两个集合u,v能够组成的边中，选择一条代价最小的边(u0,v0)，加入到最小生成树中，并把v0并入到集合u中。
+3. 重复上述步骤，直到最小生成树有n-1条边或者n个顶点为止。
+
+由于不断向集合u中加点，所以最小代价边必须同步更新；需要建立一个辅助数组closedge,用来维护集合v中每个顶点与集合u中最小代价边信息.
+
