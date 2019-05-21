@@ -593,6 +593,8 @@ bool dfs(int u) {
 }
 ```
 
+###2019-05-21
+
 * 网络流
 
 最大流：源点s到汇点t的最大流量
@@ -704,6 +706,67 @@ int maxFlow() {
         flow += a[t];
     }
     return flow;
+}
+```
+
+#### 排序复习
+
+* 快排
+
+1）设置两个变量i、j，排序开始的时候i=0，j=n-1；
+
+2）将数组首元素设成基准变量pivot；
+
+3）从后往前扫到第一个小于pivot的值，即a[j] < pivot；
+
+4）从前往后扫到第一个大于pivot的值，即a[i] > pivot；
+
+5）如果此时i和j还未重合，交换a[i]、a[j]，重复3、4直至i=j；
+
+6）交换pivot与a[i]，递归处理[l~i-1], [i+1~r]
+
+```c++
+void quickSort(int *a, int l, int r) {
+  	if(l > r) return;
+  	int i = l, j = r, pivot = a[l];
+  	while(i < j) {
+      	while(i < j && a[j] >= pivot) j--;
+      	while(i < j && a[i] <= pivot) i++;
+      	if(i < j) swap(a[i], a[j]);
+    }
+  	a[l] = a[i];
+  	a[i] = pivot;
+  	quickSort(a, l, i-1);
+  	quickSort(a, i+1, r);
+}
+```
+
+* 归并排序
+
+1）new一个辅助数组
+
+2）设两个指针，初始指向前一半和后一半的初始位置（0和mid或1和mid+1）
+
+3）比较2个指针所指向的元素，将较小者放入辅助数组
+
+4）重复3）直至某一指针超出范围，将剩余元素放入辅助数组中
+
+5）用辅助数组更新原数组
+
+```c++
+void mergeSort(int *a, int *t, int l, int r) {
+    if(l >= r) return;
+    int mid = (l+r) >> 1;
+    mergeSort(a, t, l, mid);
+    mergeSort(a, t, mid+1, r);
+    int i = l, j = mid+1, cnt = 0;
+    while(i <= mid && j <= r) {
+        if(a[i] < a[j]) t[cnt++] = a[i++];
+        else t[cnt++] = a[j++];
+    }
+    while(i <= mid) t[cnt++] = a[i++];
+    while(j <= r) t[cnt++] = a[j++];
+    for(int i = l; i <= r; i++) a[i] = t[i-l];
 }
 ```
 
