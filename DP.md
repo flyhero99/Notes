@@ -597,9 +597,113 @@ bool dfs(int u) {
 
 最大流：源点s到汇点t的最大流量
 
-增广路：是指从s到t的一条路，流过这条路，使得当前的流（可以到达t的人）可以增加。
+增广：求出图中某一条道路中所有残量的最小值d，把对应所有边的流量增加d，这个过程称为增广。
+
+增广路：是指从s到t的一条路，流过这条路，使得当前的流可以增加。
+
+增广路定理：当且仅当残量网络中不存在s-t增广路时，此时的流是从s到t的最大流。
+
+Ford-Fulkerson算法：在原图基础上反向加边，求增广路直至找不到为止。用dfs实现，最坏情况可能会很慢。
 
 ```c++
+int n, m, s, t;
 
+struct Edge {
+    int to, cap, rev; // rev表示添加的反向边(v, u)在vec[v]中的序号
+};
+
+vector<Edge> vec[maxn];
+bool vis[maxn];
+
+void addEdge(int u, int v, int cap) {
+    // 第三个参数表示(v, u)这条反向边在vec[v]中的编号是vec[v].size()
+    vec[u].push_back((Edge) {v, cap, vec[v].size()});
+    vec[v].push_back((Edge) {u, 0, vec[u].size()-1});
+}
+
+int dfs(int u, int f) {
+    if(u == t) return f;
+    vis[u] = true;
+    for(int i = 0; i < vec[u].size(); i++) {
+        Edge &e = vec[u][i];
+        if(!vis[e.to] && e.cap > 0 ) { // 还有流量
+            int d = dfs(e.to, min(e.cap, f));
+            if(d > 0) {
+                e.cap -= d;
+                vec[e.to][e.rev].cap += d;
+                return d; // 已找到增广路，返回增量
+            }
+        }
+    }
+    return 0; // 未找到增广路，返回0
+}
+
+int maxFlow() {
+    int flow = 0;
+    while(1) { // 如定理中描述，直至找不到增广路，此时即为最大流。
+        memset(vis, 0, sizeof vis);
+        int f = dfs(s, inf);
+        if(f == 0) return flow;
+        flow += f;
+    }
+}
+```
+
+bfs实现——Edmods-Karp算法：
+
+```c++
+int n, m, s, t;
+
+struct Edge {
+    int from, to, cap, flow;
+    Edge(int u, int v, int c, int f) : from(u), to(v), cap(c), flow(f) {}
+};
+
+vector<Edge> edges; // 存储所有边，两倍
+vector<int> g[maxn]; // 邻接表，g[i][j]表示结点i的第j条边在e数组中的序号
+int a[maxn]; // a[i]表示从起点到i的最小残量，递推求得，0表示未访问
+int p[maxn]; // 最短路树上p的入弧编号
+
+void init(int n) {
+    for(int i = 0; i < n; i++) g[i].clear();
+    edges.clear();
+}
+
+void addEdge(int from, int to, int cap) {
+    edges.push_back(Edge(from, to, cap, 0));
+    edges.push_back(Edge(to, from, 0, 0)); // 反向弧
+    m = edges.size();
+    g[from].push_back(m-2); // 当前边
+    g[to].push_back(m-1); // 反向边，其序号分别是2n和2n+1，二者异或值总为1
+}
+
+int maxFlow() {
+    int flow = 0;
+    while(1) {
+        memset(a, 0, sizeof a);
+        queue<int> q;
+        q.push(s);
+        a[s] = inf;
+        while(!q.empty()) {
+            int x = q.front(); q.pop();
+            for(int i = 0; i < g[x].size(); i++) {
+                Edge &e = edges[g[x][i]];
+                if(!a[e.to] && e.cap > e.flow) {
+                    p[e.to] = g[x][i];
+                    a[e.to] = min(a[x], e.cap-e.flow);
+                    q.push(e.to);
+                }
+            }
+            if(a[t]) break;
+        }
+        if(!a[t]) break;
+        for(int u = t; u != s; u = edges[p[u]].from) {
+            edges[p[u]].flow += a[t];
+            edges[p[u]^1].flow -= a[t];
+        }
+        flow += a[t];
+    }
+    return flow;
+}
 ```
 
