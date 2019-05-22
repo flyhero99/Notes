@@ -754,19 +754,29 @@ void quickSort(int *a, int l, int r) {
 5）用辅助数组更新原数组
 
 ```c++
-void mergeSort(int *a, int *t, int l, int r) {
+void mergeSort(int l, int r) {
     if(l >= r) return;
     int mid = (l+r) >> 1;
-    mergeSort(a, t, l, mid);
-    mergeSort(a, t, mid+1, r);
-    int i = l, j = mid+1, cnt = 0;
+    mergeSort(l, mid);
+    mergeSort(mid+1, r);
+    int i = l, j = mid+1, cnt = l;
     while(i <= mid && j <= r) {
-        if(a[i] < a[j]) t[cnt++] = a[i++];
-        else t[cnt++] = a[j++];
+        if(a[i] <= a[j]) t[cnt++] = a[i++];
+        else { ans += j - cnt; t[cnt++] = a[j++]; }
     }
     while(i <= mid) t[cnt++] = a[i++];
     while(j <= r) t[cnt++] = a[j++];
-    for(int i = l; i <= r; i++) a[i] = t[i-l];
+    for(int i = l; i <= r; i++) a[i] = t[i];
 }
 ```
+
+归并求逆序对：当扫到一次a[i] > a[j]的情况时，说明当前的a[i]>a[j]，并且从当前i一直到左数组结束（即mid）的所有元素均大于a[j]，因此逆序对数应加上mid - i +1，最终求得即为整个数组中逆序对个数。
+
+* 哈希
+
+散列函数：将查找的关键字映射为该关键字对应地址的函数，记为Hash(key) = Addr
+
+处理冲突：（只看了链表法）对于已有相同的key，直接将其pushback到下一个，形成一个链表，这个链表由得到的这个key唯一标识
+
+poj3349：找出是否有两瓣相同的雪花。将六个数加和，对一个大质数取模得到key，index是这片雪花对应在原数组中的下标。对于有冲突的key采用链表法解决（依次排在后面）。可实现O(1)找到相应的雪花。
 
