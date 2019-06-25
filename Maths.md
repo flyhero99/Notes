@@ -28,3 +28,4 @@
 > 奇异值分解能用于任意大小的矩阵，而特征分解只能用于特定类型的方阵，因而奇异值分解的适用范围更广.
 
 * [主成分分析（PCA）原理详解](https://blog.csdn.net/program_developer/article/details/80632779)
+* 
