@@ -18,3 +18,17 @@ coarse			adj. 粗糙的，粗的
 
 synthetic		adj. 人造的，人工合成的
 
+relieve			adj. 解除；减轻；缓和
+
+pretext			adj. 借口，托词
+
+negligible		adj. 不重要的；微不足道的；不值一提的
+
+resolution		adj. 决议；正式决定；解决，消除；坚定
+
+inpainting		adj. （图像）修复
+
+adversarial		adj. 对立的；敌对的
+
+milestone		adj. 里程碑；重要事件
+
