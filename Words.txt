@@ -34,4 +34,6 @@ milestone		adj. 里程碑；重要事件
 
 hallucination		n. 幻觉
 
+distill			v. 蒸馏；提取；滴下
+
 
