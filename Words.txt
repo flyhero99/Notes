@@ -36,4 +36,23 @@ hallucination		n. 幻觉
 
 distill			v. 蒸馏；提取；滴下
 
+skeleton		n. 骨骼，骨架
+
+phase			n. 阶段，时期
+
+review			n. 评查，审查，检查；报告；汇报 & v. 复查，反思，回顾，评论
+
+revise			v. 改变，修改；复习
+
+intervention		n. 干涉；干预
+
+leverage		n. 杠杆，杠杆作用，影响力 & v. 发挥杠杆作用，施加影响
+
+alleviate		v. 减轻；缓解；缓和
+
+incorporate		v. 包含；吸收；将...包括在内
+
+exemplar		n. 典型；模范；榜样；范例
+
+trivial			adj. 不重要的；琐碎的；微不足道的
 
