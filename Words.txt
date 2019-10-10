@@ -56,3 +56,15 @@ exemplar		n. 典型；模范；榜样；范例
 
 trivial			adj. 不重要的；琐碎的；微不足道的
 
+scarce			adj. 缺乏的，不足的，稀少的
+
+latent			adj. 潜在的，潜伏的，隐藏的
+
+salient			adj. 最重要的，显著的，突出的
+
+intermediate		adj. 之间的，中间的，中等的，适合中等程度者的
+
+generic			adj. 一般的，普通的，通用的
+
+
+
