@@ -66,5 +66,32 @@ intermediate		adj. 之间的，中间的，中等的，适合中等程度者的
 
 generic			adj. 一般的，普通的，通用的
 
+pitfall			adj. 危险，困难，陷阱，隐患
+
+paradigm		adj. 典范，范例，样式
+
+tacit			adj. 心照不宣的; 不言而喻的; 默示的;
+
+disseminating		adj. 散布，传播
+
+protein			n. 蛋白质
+
+enzyme			n. 酶
+
+laborious		adj. 耗时费力的; 辛苦的;
+
+alleviate		adj. 减轻; 缓和; 缓解;
+
+subsequent		adj. 随后的; 后来的; 之后的; 接后的;
+
+comprise		adj. 包括; 包含; 由…组成; 
+
+synonym			adj. 同义词
+
+rigorously		adj. 严厉地
+
+lexical			adj. 词汇的
+
+hypernym		adj. 上位词; 上义词; 上位; 上位关系; 上义;
 
 
