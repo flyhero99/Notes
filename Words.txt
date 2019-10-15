@@ -100,3 +100,5 @@ syntactic		adj. 句法的，句法级别的
 
 semantic		adj. 语义的
 
+holistically		adv. 整体地; 全面地; 整体性; 不更全面地; 整体的;
+
