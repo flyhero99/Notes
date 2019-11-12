@@ -1,0 +1,1 @@
+python3 DCServer/DCServer.py -d -p 6566

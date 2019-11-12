@@ -1,0 +1,8 @@
+[database]
+name =
+user =
+password =
+host =
+
+[settings]
+debug = True

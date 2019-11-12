@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}DC Search{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Keyword</a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-left" role="search" onsubmit="update_echart();return false;">
+            <div class="form-group">
+              <input id="keyword" type="text" class="form-control" placeholder="e.g. 社会主义">
+            </div>
+            <button id="search_btn" type="submit" class="btn btn-default">Search</button>
+          </form>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    <div id="echart_main" style="width: 800px;height: 600px;"></div>
+
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('echart_main'));
+
+{#        $('#search_btn').click(function () {#}
+{#            update_echart($('#keyword').val());#}
+{#        });#}
+
+        function update_echart() {
+            var keyword = $('#keyword').val();
+            myChart.showLoading();
+            $.ajax({
+                url: '/get_people_daily_distribution_by_word/{0}'.format(keyword),
+                dataType: 'json',
+                success: function(data) {
+                    myChart.hideLoading();
+                    myChart.setOption({
+                        legend: {
+                            data:[keyword]
+                        },
+                        xAxis: {
+                            data: data['_id']
+                        },
+                        yAxis: {},
+                        series: [{
+                            // 根据名字对应到相应的系列
+                            name: keyword,
+                            type: 'bar',
+                            label: {normal:{show: true, position: 'top'}},
+                            data: data['total']
+                        }]
+                    });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    myChart.hideLoading();
+                    alert('{0}: {1}'.format(textStatus, errorThrown.toString()));
+                }
+            });
+        }
+
+        myChart.setOption({
+            title: {
+                text: '历时语料库搜索'
+            },
+            xAxis: {
+                data: []
+            },
+            yAxis: {}
+        });
+    </script>
+{% endblock %}
