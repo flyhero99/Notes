@@ -11,7 +11,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "d3": "^5.4.0",
     "d3-cloud": "^1.2.5",
     "d3-dispatch": "^1.0.3",
